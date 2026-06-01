@@ -3,7 +3,7 @@
 ---
 
 ## Goal
-Test session after git init
+Final test
 
 ---
 
