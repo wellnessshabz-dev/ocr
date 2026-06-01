@@ -6,11 +6,11 @@
 
 ---
 
-## 2026-06-02 — Session tracking in `ocr/tracking/` not `.ocr/`
+## 2026-06-02 — Session tracking in `tracking/` not `.ocr/`
 
-**Decision:** Place session tracking files in `ocr/tracking/` (a visible directory) instead of `.ocr/` (a hidden dot-directory).
+**Decision:** Place session tracking files in `tracking/` (a visible directory) instead of `.ocr/` (a hidden dot-directory).
 
-**Rationale:** Hidden dot-directories are invisible to `ls` by default, confusing for new developers, and agents may not discover them without explicit instruction. A visible `ocr/tracking/` directory is self-documenting — its `_index.md` explains the system immediately.
+**Rationale:** Hidden dot-directories are invisible to `ls` by default, confusing for new developers, and agents may not discover them without explicit instruction. A visible `tracking/` directory is self-documenting — its `_index.md` explains the system immediately.
 
 **Alternatives considered:**
 - `.ocr/` — hidden, gitignored by convention, keeps root clean
@@ -19,16 +19,16 @@
 
 **Consequences:**
 - All tracking files are git-tracked (except STATE.json) — visible in `git log`
-- Agents can discover `ocr/tracking/` via directory listing
+- Agents can discover `tracking/` via directory listing
 - SESSION.md is ephemeral (resets per session) but git tracks it — old sessions are recoverable
 
-**Related:** `ocr/tracking/PROTOCOL.md`
+**Related:** `PROTOCOL.md`
 
 ---
 
 ## 2026-06-02 — ckpt for git checkpoints + custom session.sh for context
 
-**Decision:** Use `@mohshomis/ckpt` (npm package) for git-based checkpoints and build `ocr/tracking/tools/session.sh` as a thin wrapper that bridges ckpt mechanics with session context tracking.
+**Decision:** Use `@mohshomis/ckpt` (npm package) for git-based checkpoints and build `tools/session.sh` as a thin wrapper that bridges ckpt mechanics with session context tracking.
 
 **Rationale:** ckpt handles the hard part (hidden git branches, per-step commits, restore, squash). Building that from scratch would be fragile. But ckpt has no concept of "session goals" or "decision logs" — that's what the custom files provide.
 
@@ -42,7 +42,7 @@
 - session.sh is the single entry point — agents don't call ckpt directly
 - CHECKPOINTS.md bridges ckpt's git model to OCR's tracking model
 
-**Related:** `ocr/tracking/PROTOCOL.md`, `ocr/tracking/tools/session.sh`
+**Related:** `PROTOCOL.md`, `tools/session.sh`
 
 ---
 

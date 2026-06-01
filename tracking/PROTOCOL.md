@@ -26,7 +26,7 @@ This protocol defines how agents interact with the system.
 Read existing state, begin tracking.
 
 ```bash
-./ocr/tracking/tools/session.sh start "Implement X"
+./tools/session.sh start "Implement X"
 ```
 
 This:
@@ -40,7 +40,7 @@ This:
 Before each significant change, create a checkpoint.
 
 ```bash
-./ocr/tracking/tools/session.sh snap "adding auth middleware"
+./tools/session.sh snap "adding auth middleware"
 ```
 
 This:
@@ -56,7 +56,7 @@ Frequency: before every tool call that modifies files (writes, edits, moves).
 Manually sync the checkpoint registry with ckpt's internal state.
 
 ```bash
-./ocr/tracking/tools/session.sh sync
+./tools/session.sh sync
 ```
 
 This:
@@ -71,7 +71,7 @@ Useful when you need an up-to-date CHECKPOINTS.md without creating a new snapsho
 Append to DECISIONS.md when an architectural or implementation decision is made.
 
 ```bash
-./ocr/tracking/tools/session.sh decide "Decision title" "Rationale" "Alternatives considered"
+./tools/session.sh decide "Decision title" "Rationale" "Alternatives considered"
 ```
 
 Or write the entry manually using the format:
@@ -91,7 +91,7 @@ Or write the entry manually using the format:
 Finalize the session.
 
 ```bash
-./ocr/tracking/tools/session.sh end
+./tools/session.sh end
 ```
 
 This:

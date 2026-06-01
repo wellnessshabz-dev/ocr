@@ -2,7 +2,7 @@
 title: "Tracking — Session Log & Checkpoint System"
 description: "Session tracking, decision logging, and git-based checkpoints for agent sessions. Every session produces a compact summary, a log entry, decision records, and recoverable checkpoints."
 status: "active"
-district: "ocr/tracking"
+district: "tracking"
 type: "neighborhood"
 parent: "ocr"
 neighbors: ["replay", "docs/architecture", "docs/adrs"]
@@ -60,7 +60,7 @@ so work can be resumed or rolled back.
 ## How It Works
 
 ```
-ckpt (git hidden branches)           ocr/tracking/ (session state)
+ckpt (git hidden branches)           tracking/ (session state)
          │                                      │
   ckpt start ───────────►  session.sh start ──► SESSION.md + STATE.json
   ckpt snap "msg" ──────►  session.sh snap ───► SESSION.md (progress)
@@ -73,10 +73,10 @@ ckpt (git hidden branches)           ocr/tracking/ (session state)
 
 ```
 1. Read SESSION.md — understand current state
-2. Run: ./ocr/tracking/tools/session.sh start "Goal: X" — begin tracking
-3. Before each change: ./ocr/tracking/tools/session.sh snap "doing Y"
+2. Run: ./tools/session.sh start "Goal: X" — begin tracking
+3. Before each change: ./tools/session.sh snap "doing Y"
 4. After each decision: write to DECISIONS.md (one entry)
-5. At session end: ./ocr/tracking/tools/session.sh end
+5. At session end: ./tools/session.sh end
 ```
 
 ## Related

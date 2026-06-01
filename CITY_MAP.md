@@ -217,11 +217,11 @@ ingestion/obsidian──► ontology/extraction──► cognition/chairman ─�
 | `unit/` | Module-level unit tests |
 | `integration/` | End-to-end integration tests |
 
-### `ocr/tracking/` — Session Log & Checkpoint System (1 neighborhood)
+### `tracking/` — Session Log & Checkpoint System (1 neighborhood)
 
 | Neighborhood | Purpose |
 |-------------|---------|
-| `tracking/` | Session tracking, decision log, checkpoint registry. See `ocr/tracking/PROTOCOL.md` |
+| `tracking/` | Session tracking, decision log, checkpoint registry. See `tracking/PROTOCOL.md` |
 
 **Traffic:** Agents read/write SESSION.md per session; LOG.md and DECISIONS.md are append-only; CHECKPOINTS.md maps ckpt steps to git hashes.
 
@@ -232,14 +232,14 @@ ingestion/obsidian──► ontology/extraction──► cognition/chairman ─�
 | 🔴 **Critical** | `cognition/`, `gbrain/`, `ontology/`, `shipments/`, `ledger/`, `orchestration/`, `src/`, `infra/` | Data loss, service outage, wrong decisions |
 | 🟡 **High** | `agents/`, `ingestion/`, `tests/` | Agent misbehavior, missing signals, false CI |
 | 🟢 **Medium** | `observability/`, `replay/`, `surfaces/` | Blindness, can't debug, display bugs |
-| 🟡 **Medium** | `ocr/tracking/` | Lost session context, confused agents on resume |
+| 🟡 **Medium** | `tracking/` | Lost session context, confused agents on resume |
 | ⚪ **Low** | `docs/`, `raw/`, `scripts/` | Confusion, wasted dev time |
 
 ## Naming Conventions
 
 | Scope | Convention | Example |
 |-------|-----------|---------|
-| Directories | `snake_case`, singular noun | `shipments/`, `cognition/`, `ontology/` |
+| Directories | `kebab-case`, plural noun | `agents/`, `shipments/`, `cognition/`, `ontology/` |
 | Python files | `snake_case` | `scraper_router.py`, `firecrawl_adapter.py` |
 | Config files | `kebab-case` or `YAML` | `docker-compose.yml`, `nginx.conf` |
 | Markdown docs | Descriptive, `_` prefix for meta | `_index.md`, `_maintenance.md`, `images.md` |

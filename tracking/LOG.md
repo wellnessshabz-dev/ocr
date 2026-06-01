@@ -9,14 +9,14 @@
 - **Duration:** 1 session
 - **Goal:** Implement codebase logs and checkpoint system
 - **Done:**
-  - Created `ocr/tracking/` with SESSION.md, LOG.md, DECISIONS.md, CHECKPOINTS.md, STATE.json, PROTOCOL.md
-  - Created `ocr/tracking/tools/session.sh` — session lifecycle tool wrapping ckpt
+  - Created `tracking/` with SESSION.md, LOG.md, DECISIONS.md, CHECKPOINTS.md, STATE.json, PROTOCOL.md
+  - Created `tracking/tools/session.sh` — session lifecycle tool wrapping ckpt
   - Installed ckpt (v0.1.1) via npm globally
   - Created `.gitignore` at project root
   - Rewrote `AGENTS.md` — replaced 79% stale content with current Medallion architecture
   - Updated `replay/_index.md` — linked to CHECKPOINTS.md as checkpoint source
 - **Decisions:**
-  - Use `ocr/tracking/` (not `.ocr/`) for discoverability — visible directory, git-tracked
+  - Use `tracking/` (not `.ocr/`) for discoverability — visible directory, git-tracked
   - Use ckpt for git mechanics + custom session.sh for session context tracking
   - LOG.md and DECISIONS.md are append-only — never edit history
 - **Next steps:** Wire gbrain ingestion of SESSION.md, build replay manager
@@ -40,8 +40,8 @@
 - **Duration:** 1 session  
 - **Goal:** Implement codebase logs and checkpoint system
 - **Done:**
-  - Created `ocr/tracking/` with SESSION.md, LOG.md, DECISIONS.md, CHECKPOINTS.md, STATE.json, PROTOCOL.md
-  - Created `ocr/tracking/tools/session.sh` — session lifecycle tool wrapping ckpt
+  - Created `tracking/` with SESSION.md, LOG.md, DECISIONS.md, CHECKPOINTS.md, STATE.json, PROTOCOL.md
+  - Created `tracking/tools/session.sh` — session lifecycle tool wrapping ckpt
   - Installed ckpt (v0.1.1) via npm globally
   - Created `.gitignore` at project root
   - Rewrote `AGENTS.md` — replaced 79% stale content with current Medallion architecture
@@ -52,7 +52,7 @@
   - Removed gbrain/gstack submodule references (mode 160000 entries)
   - Fixed CHECKPOINTS.md persistence (was gitignored)
 - **Decisions:**
-  - Use `ocr/tracking/` (not `.ocr/`) for discoverability
+  - Use `tracking/` (not `.ocr/`) for discoverability
   - Use ckpt for git mechanics + custom session.sh for session context
   - LOG.md and DECISIONS.md are append-only — never edit history
 - **Next steps:** Wire gbrain ingestion, produce session summary
@@ -69,3 +69,13 @@
 - **Decisions:**
   - Keep AGENTS.md and agents.md as separate regular files (symlinks unreliable in this setup)
 - **Next steps:** Wire gbrain ingestion (Gate 1: Bronze → Silver)
+
+## 2026-06-01 — 
+
+- **Duration:** (fill in)
+- **Goal:** 
+- **Done:**
+  - (see SESSION.md for full progress)
+- **Decisions:**
+  - (see DECISIONS.md for full decision log)
+- **Next steps:** (fill in)

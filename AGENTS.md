@@ -10,7 +10,7 @@ It is built from:
 - `raw/repos/gbrain/` — garrytan/gbrain (the Silver/Gold layer)
 - `raw/repos/gstack/` — garrytan/gstack (the skill format reference)
 
-Session state tracking is in `ocr/tracking/` — see `ocr/tracking/PROTOCOL.md`.
+Session state tracking is in `tracking/` — see `tracking/PROTOCOL.md`.
 
 > **City Map:** See `CITY_MAP.md` for the complete district atlas. `_index.md` files in each directory are the neighborhood signposts.
 
@@ -43,7 +43,7 @@ Gold (answers)
 | **Bronze** | Docker Compose | Built — postgres, redis, ollama, fastapi, nginx | `docker-compose.yml` |
 | **Silver** | gbrain (memory/search/synthesis) | Cloned reference — not yet wired | `raw/repos/gbrain/` |
 | **Gold** | gbrain query | Cloned reference — not yet wired | `raw/repos/gbrain/` |
-| **Cross** | Session tracking | Built — SESSION.md, LOG.md, DECISIONS.md, ckpt | `ocr/tracking/` |
+| **Cross** | Session tracking | Built — SESSION.md, LOG.md, DECISIONS.md, ckpt | `tracking/` |
 | **Cross** | Executive dashboard | Stub — static HTML, no live updates | `surfaces/executive/index.html` |
 
 ### What is designed but not built
@@ -96,7 +96,7 @@ graph TB
     end
 
     subgraph GOV["Cross-cutting"]
-        TR[ocr/tracking/ — session state]
+        TR[tracking/ — session state]
         GL[Governance — schema only]
         RM[Replay — schema only]
     end
@@ -140,7 +140,7 @@ Not deployed: n8n, gbrain, Keycloak, WebSocket.
 
 ## Session Tracking
 
-All agent sessions tracked in `ocr/tracking/`:
+All agent sessions tracked in `tracking/`:
 
 | File | Purpose |
 |------|---------|
@@ -150,7 +150,7 @@ All agent sessions tracked in `ocr/tracking/`:
 | `CHECKPOINTS.md` | Registry: ckpt step -> git hash -> description |
 | `STATE.json` | Machine-readable state (for scripts/CI) |
 
-Protocol: `ocr/tracking/PROTOCOL.md`.
+Protocol: `tracking/PROTOCOL.md`.
 
 ---
 
@@ -163,4 +163,4 @@ Protocol: `ocr/tracking/PROTOCOL.md`.
 - `docs/governance/medallion-gates-guide.md` — Gate enforcement guide
 - `raw/repos/gbrain/_index.md` — gbrain reference
 - `raw/repos/gstack/_index.md` — gstack reference
-- `ocr/tracking/PROTOCOL.md` — Session tracking protocol
+- `tracking/PROTOCOL.md` — Session tracking protocol
