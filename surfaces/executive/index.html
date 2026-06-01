@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCR — Cognition Map</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; min-height: 100vh; }
+    .sidebar { width: 300px; background: #1e293b; padding: 1.5rem; overflow-y: auto; border-right: 1px solid #334155; }
+    .main { flex: 1; padding: 1.5rem; overflow-y: auto; }
+    .right { width: 320px; background: #1e293b; padding: 1.5rem; overflow-y: auto; border-left: 1px solid #334155; }
+    h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #f8fafc; }
+    h2 { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin: 1.5rem 0 0.75rem; }
+    h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin: 1rem 0 0.5rem; }
+    .badge { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+    .badge-foundation { background: #3b82f6; color: #eff6ff; }
+    .status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.5rem; }
+    .status-ok { background: #10b981; }
+    .status-warn { background: #f59e0b; }
+    .status-err { background: #ef4444; }
+    .tree-node { padding: 0.25rem 0; font-size: 0.8125rem; cursor: pointer; }
+    .tree-node:hover { color: #93c5fd; }
+    .tree-folder { color: #60a5fa; }
+    .tree-file { color: #94a3b8; margin-left: 1rem; }
+    .tree-toggle { display: inline-block; width: 1rem; cursor: pointer; color: #64748b; user-select: none; }
+    .tree-children { margin-left: 1rem; display: none; }
+    .tree-children.open { display: block; }
+    .layer-card { padding: 0.75rem; margin-bottom: 0.5rem; background: #334155; border-radius: 0.375rem; }
+    .layer-name { font-weight: 600; font-size: 0.875rem; }
+    .layer-path { font-size: 0.75rem; color: #64748b; font-family: monospace; }
+    .layer-count { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
+    .shipment-item, .adr-item { padding: 0.5rem; margin-bottom: 0.25rem; background: #334155; border-radius: 0.25rem; font-size: 0.8125rem; }
+    .shipment-id { font-family: monospace; color: #60a5fa; }
+    .shipment-status { font-size: 0.75rem; margin-top: 0.25rem; }
+    .adr-title { color: #a5b4fc; text-decoration: none; }
+    .adr-title:hover { color: #c7d2fe; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.75rem; }
+    .section { background: #1e293b; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #334155; }
+</style>
+</head>
+<body>
+<div class="sidebar">
+    <h1>🧠 OCR</h1>
+    <p style="font-size:0.75rem;color:#64748b;margin-bottom:1.5rem;">Organizational Cognition Runtime</p>
+
+    <div style="margin-bottom:1rem;">
+        <span class="status status-ok"></span><span style="font-size:0.8125rem;">All services nominal</span>
+    </div>
+
+    <h2>Architecture Layers</h2>
+    <div id="layers">
+        
+        <div class="layer-card" style="border-left: 4px solid #f97316">
+            <div class="layer-name">Agent Layer</div>
+            <div class="layer-path">agents/</div>
+            <div class="layer-count">2 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #3b82f6">
+            <div class="layer-name">Cognition Runtime</div>
+            <div class="layer-path">cognition/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #78716c">
+            <div class="layer-name">Documentation</div>
+            <div class="layer-path">docs/</div>
+            <div class="layer-count">6 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #06b6d4">
+            <div class="layer-name">Memory Substrate</div>
+            <div class="layer-path">gbrain/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #64748b">
+            <div class="layer-name">Infrastructure</div>
+            <div class="layer-path">infra/</div>
+            <div class="layer-count">2 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #6366f1">
+            <div class="layer-name">Ingestion</div>
+            <div class="layer-path">ingestion/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #10b981">
+            <div class="layer-name">Cognition Ledger</div>
+            <div class="layer-path">ledger/</div>
+            <div class="layer-count">1 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #a855f7">
+            <div class="layer-name">Observability</div>
+            <div class="layer-path">observability/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #8b5cf6">
+            <div class="layer-name">Ontology Engine</div>
+            <div class="layer-path">ontology/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #ec4899">
+            <div class="layer-name">Orchestration</div>
+            <div class="layer-path">orchestration/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #6b7280">
+            <div class="layer-name">raw</div>
+            <div class="layer-path">raw/</div>
+            <div class="layer-count">441 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #14b8a6">
+            <div class="layer-name">Replay Engine</div>
+            <div class="layer-path">replay/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #6b7280">
+            <div class="layer-name">scripts</div>
+            <div class="layer-path">scripts/</div>
+            <div class="layer-count">1 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #f59e0b">
+            <div class="layer-name">Shipment Pipeline</div>
+            <div class="layer-path">shipments/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #6b7280">
+            <div class="layer-name">src</div>
+            <div class="layer-path">src/</div>
+            <div class="layer-count">1 files</div>
+        </div>
+        <div class="layer-card" style="border-left: 4px solid #84cc16">
+            <div class="layer-name">Executive Surfaces</div>
+            <div class="layer-path">surfaces/</div>
+            <div class="layer-count">0 files</div>
+        </div>
+    </div>
+
+    <h2>ADRs</h2>
+    <div id="adrs">
+        
+            <div class="adr-item">
+                <a href="file:///Users/shadabkhan/Desktop/ocr/docs/adrs/ADR-0001-agent-agnostic-runtime.md" class="adr-title">ADR-0001: Agent-Agnostic Runtime</a>
+            </div>
+            <div class="adr-item">
+                <a href="file:///Users/shadabkhan/Desktop/ocr/docs/adrs/ADR-0002-shipment-first-cognition.md" class="adr-title">ADR-0002: Shipment-First Cognition</a>
+            </div>
+            <div class="adr-item">
+                <a href="file:///Users/shadabkhan/Desktop/ocr/docs/adrs/ADR-0003-ontology-lifecycle-governance.md" class="adr-title">ADR-0003: Ontology Lifecycle Governance</a>
+            </div>
+            <div class="adr-item">
+                <a href="file:///Users/shadabkhan/Desktop/ocr/docs/adrs/ADR-0004-replayability-requirements.md" class="adr-title">ADR-0004: Replayability Requirements</a>
+            </div>
+            <div class="adr-item">
+                <a href="file:///Users/shadabkhan/Desktop/ocr/docs/adrs/ADR-0005-governance-before-autonomy.md" class="adr-title">ADR-0005: Governance Before Autonomy</a>
+            </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="grid">
+        <div class="section">
+            <h3>Folder Structure</h3>
+            <div id="tree">
+                <div class="tree-node tree-file" style="margin-left:1rem">📄 README.md</div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 agents</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 adapters</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 base.py</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 claude</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 adapter.py</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 codex</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 kimi</span>
+            </div>
+            <div class="tree-children"></div></div><div class="tree-node tree-file" style="margin-left:1rem">📄 agents.md</div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 cognition</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 chairman</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 councils</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 governance</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 skills</span>
+            </div>
+            <div class="tree-children"></div></div><div class="tree-node tree-file" style="margin-left:1rem">📄 docker-compose.yml</div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 docs</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 adrs</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 ADR-0001-agent-agnostic-runtime.md</div><div class="tree-node tree-file" style="margin-left:3rem">📄 ADR-0002-shipment-first-cognition.md</div><div class="tree-node tree-file" style="margin-left:3rem">📄 ADR-0003-ontology-lifecycle-governance.md</div><div class="tree-node tree-file" style="margin-left:3rem">📄 ADR-0004-replayability-requirements.md</div><div class="tree-node tree-file" style="margin-left:3rem">📄 ADR-0005-governance-before-autonomy.md</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 architecture</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 build</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 v1_plan.md</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 governance</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ontology</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 gbrain</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 activation</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 episodic</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 replay</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 semantic</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 temporal</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 infra</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 compose</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 docker</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 fastapi.Dockerfile</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 nginx</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 nginx.conf</div></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ingestion</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 filesystem</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 github</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 manual</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 obsidian</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ledger</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 migrations</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 schemas</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 001_init.sql</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 seeds</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 observability</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 audits</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 logs</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 metrics</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 traces</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ontology</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 contradictions</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 extraction</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 graph</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 lifecycle</span>
+            </div>
+            <div class="tree-children"></div></div><div class="tree-node tree-file" style="margin-left:1rem">📄 opencode_terminal_commands.md</div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 orchestration</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 dags</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 n8n</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 triggers</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 raw</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 docs</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 activation_score_formula.txt</div><div class="tree-node tree-file" style="margin-left:3rem">📄 chairman_output_schema.json</div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ocr_kimi_2.6_raw_1</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 000_frontmatter.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 01_system_overview_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 02_cognition_runtime_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 03_shipment_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 04_gstack_skill_activation_runtime.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 05_council_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 06_gbrain_memory_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 07_ontology_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 08_trajectory_modeling.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 09_repo_changes_and_organizational_state.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 10_executive_cognition_surfaces.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 11_podcast_notebooklm_style_synthesis.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 12_n8n_dag_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 13_graph_schema.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 14_replayability_and_lineage.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 15_governance_and_auditability.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 16_mcp_ingestion_security.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 17_obsidian_repo_evolution_linkage.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 18_semantic_persistence.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 19_multi_tenant_cognition.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 20_deployment_architecture.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 21_the_long_term_moat.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 22_roadmap_evolution.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 999_closing_principles.md</div></div><div class="tree-node tree-file" style="margin-left:3rem">📄 ocr_kimi_2.6_raw_1.md</div><div class="tree-node tree-file" style="margin-left:3rem">📄 semantic_memory_fragment.json</div><div class="tree-node tree-file" style="margin-left:3rem">📄 skill_router_v1.md</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 images</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 01_system_overview_architecture.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 02_sidebar_legend.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 03_ontology_evolution_flowchart.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 04_cognition_runtime_state_machine.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 05_shipment_flow_sequence.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 06_gstack_skill_activation_runtime.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 07_council_deliberation_protocol.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 08_gbrain_memory_architecture.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 09_ontology_architecture.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 10_trajectory_modeling.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 11_commit_pipeline_sequence.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 12_executive_cognition_surfaces.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 13_trajectory_styling_legend.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 14_section_header_banner.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 15_n8n_dag_architecture.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 16_graph_schema.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 17_sidebar_legend_tenancy.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 18_podcast_generation_flow.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 19_deployment_architecture.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 20_governance_and_auditability.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 21_mcp_ingestion_security.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 22_obsidian_repo_linkage.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 23_multi_tenant_cognition.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 24_roadmap_gantt.png</div><div class="tree-node tree-file" style="margin-left:3rem">📄 images.md</div></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 skills</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:3rem">📄 SKILL_MAPPING.md</div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 algorithmic-art</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 templates</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 generator_template.js</div><div class="tree-node tree-file" style="margin-left:5rem">📄 viewer.html</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 brand-guidelines</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 canvas-design</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 canvas-fonts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 ArsenalSC-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 ArsenalSC-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BigShoulders-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BigShoulders-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BigShoulders-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Boldonse-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Boldonse-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BricolageGrotesque-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BricolageGrotesque-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 BricolageGrotesque-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 CrimsonPro-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 CrimsonPro-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 CrimsonPro-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 CrimsonPro-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 DMMono-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 DMMono-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 EricaOne-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 EricaOne-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 GeistMono-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 GeistMono-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 GeistMono-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Gloock-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Gloock-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexMono-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexMono-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexMono-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexSerif-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexSerif-BoldItalic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexSerif-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 IBMPlexSerif-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSans-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSans-BoldItalic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSans-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSans-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSans-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSerif-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 InstrumentSerif-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Italiana-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Italiana-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 JetBrainsMono-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 JetBrainsMono-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 JetBrainsMono-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Jura-Light.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Jura-Medium.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Jura-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 LibreBaskerville-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 LibreBaskerville-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Lora-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Lora-BoldItalic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Lora-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Lora-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Lora-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 NationalPark-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 NationalPark-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 NationalPark-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 NothingYouCouldDo-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 NothingYouCouldDo-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Outfit-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Outfit-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Outfit-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 PixelifySans-Medium.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 PixelifySans-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 PoiretOne-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 PoiretOne-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 RedHatMono-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 RedHatMono-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 RedHatMono-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Silkscreen-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Silkscreen-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 SmoochSans-Medium.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 SmoochSans-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Tektur-Medium.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Tektur-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 Tektur-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 WorkSans-Bold.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 WorkSans-BoldItalic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 WorkSans-Italic.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 WorkSans-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 WorkSans-Regular.ttf</div><div class="tree-node tree-file" style="margin-left:5rem">📄 YoungSerif-OFL.txt</div><div class="tree-node tree-file" style="margin-left:5rem">📄 YoungSerif-Regular.ttf</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 claude-api</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 csharp</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 claude-api.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 curl</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 examples.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 go</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 claude-api.md</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 java</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 claude-api.md</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 php</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 claude-api.md</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 python</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 claude-api</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 batches.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 files-api.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 streaming.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 tool-use.md</div></div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ruby</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 claude-api.md</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 shared</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 agent-design.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 error-codes.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 live-sources.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-api-reference.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-client-patterns.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-core.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-environments.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-events.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-memory.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-onboarding.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-overview.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 managed-agents-tools.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 model-migration.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 models.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 prompt-caching.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 tool-use-concepts.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 typescript</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 claude-api</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 batches.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 files-api.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 streaming.md</div><div class="tree-node tree-file" style="margin-left:6rem">📄 tool-use.md</div></div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 managed-agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 README.md</div></div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 doc-coauthoring</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 docx</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 accept_changes.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 comment.py</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 office</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 helpers</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 merge_runs.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 simplify_redlines.py</div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 pack.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 schemas</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ISO-IEC29500-4_2016</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chart.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chartDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-diagram.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-lockedCanvas.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-picture.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 pml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-additionalCharacteristics.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-bibliography.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-commonSimpleTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlDataProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlSchemaProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesCustom.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesExtended.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesVariantTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-math.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-relationshipReference.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 sml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-officeDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-presentationDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 xml.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ecma</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:7rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 fouth-edition</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-contentTypes.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-coreProperties.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-digSig.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-relationships.xsd</div></div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 mce</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 mc.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 microsoft</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2010.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2012.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cex-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cid-2016.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-sdtdatahash-2020.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-symex-2015.xsd</div></div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 soffice.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 unpack.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 validate.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 validators</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 base.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 docx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 pptx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 redlining.py</div></div></div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 templates</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:6rem">📄 comments.xml</div><div class="tree-node tree-file" style="margin-left:6rem">📄 commentsExtended.xml</div><div class="tree-node tree-file" style="margin-left:6rem">📄 commentsExtensible.xml</div><div class="tree-node tree-file" style="margin-left:6rem">📄 commentsIds.xml</div><div class="tree-node tree-file" style="margin-left:6rem">📄 people.xml</div></div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 frontend-design</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 internal-comms</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 examples</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 3p-updates.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 company-newsletter.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 faq-answers.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 general-comms.md</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 mcp-builder</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 reference</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 evaluation.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 mcp_best_practices.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 node_mcp_server.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 python_mcp_server.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 connections.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 evaluation.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 example_evaluation.xml</div><div class="tree-node tree-file" style="margin-left:5rem">📄 requirements.txt</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 pdf</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 forms.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 reference.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 check_bounding_boxes.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 check_fillable_fields.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 convert_pdf_to_images.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 create_validation_image.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 extract_form_field_info.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 extract_form_structure.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 fill_fillable_fields.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 fill_pdf_form_with_annotations.py</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 pptx</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 editing.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 pptxgenjs.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 add_slide.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 clean.py</div>
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 office</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 helpers</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 merge_runs.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 simplify_redlines.py</div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 pack.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 schemas</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ISO-IEC29500-4_2016</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chart.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chartDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-diagram.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-lockedCanvas.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-picture.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 pml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-additionalCharacteristics.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-bibliography.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-commonSimpleTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlDataProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlSchemaProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesCustom.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesExtended.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesVariantTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-math.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-relationshipReference.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 sml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-officeDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-presentationDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 xml.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ecma</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:7rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 fouth-edition</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-contentTypes.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-coreProperties.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-digSig.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-relationships.xsd</div></div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 mce</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 mc.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 microsoft</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2010.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2012.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cex-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cid-2016.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-sdtdatahash-2020.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-symex-2015.xsd</div></div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 soffice.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 unpack.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 validate.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 validators</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 base.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 docx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 pptx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 redlining.py</div></div></div><div class="tree-node tree-file" style="margin-left:5rem">📄 thumbnail.py</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 skill-creator</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 agents</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 analyzer.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 comparator.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 grader.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 assets</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 eval_review.html</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 eval-viewer</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 generate_review.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 viewer.html</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 references</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 schemas.md</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 aggregate_benchmark.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 generate_report.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 improve_description.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 package_skill.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 quick_validate.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 run_eval.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 run_loop.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 utils.py</div></div></div><div class="tree-node tree-file" style="margin-left:3rem">📄 skill_router.py</div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 slack-gif-creator</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 core</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 easing.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 frame_composer.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 gif_builder.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 validators.py</div></div><div class="tree-node tree-file" style="margin-left:4rem">📄 requirements.txt</div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 theme-factory</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div><div class="tree-node tree-file" style="margin-left:4rem">📄 theme-showcase.pdf</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 themes</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 arctic-frost.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 botanical-garden.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 desert-rose.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 forest-canopy.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 golden-hour.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 midnight-galaxy.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 modern-minimalist.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 ocean-depths.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 sunset-boulevard.md</div><div class="tree-node tree-file" style="margin-left:5rem">📄 tech-innovation.md</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 web-artifacts-builder</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 bundle-artifact.sh</div><div class="tree-node tree-file" style="margin-left:5rem">📄 init-artifact.sh</div><div class="tree-node tree-file" style="margin-left:5rem">📄 shadcn-components.tar.gz</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 webapp-testing</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 examples</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 console_logging.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 element_discovery.py</div><div class="tree-node tree-file" style="margin-left:5rem">📄 static_html_automation.py</div></div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:5rem">📄 with_server.py</div></div></div>
+            <div class="tree-node" style="margin-left:2rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 xlsx</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:4rem">📄 LICENSE.txt</div><div class="tree-node tree-file" style="margin-left:4rem">📄 SKILL.md</div>
+            <div class="tree-node" style="margin-left:3rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:4rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 office</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 helpers</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 merge_runs.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 simplify_redlines.py</div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 pack.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 schemas</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ISO-IEC29500-4_2016</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chart.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-chartDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-diagram.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-lockedCanvas.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-picture.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 dml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 pml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-additionalCharacteristics.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-bibliography.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-commonSimpleTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlDataProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-customXmlSchemaProperties.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesCustom.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesExtended.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-documentPropertiesVariantTypes.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-math.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 shared-relationshipReference.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 sml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-main.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-officeDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-presentationDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-spreadsheetDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 vml-wordprocessingDrawing.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 xml.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ecma</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:7rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 fouth-edition</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-contentTypes.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-coreProperties.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-digSig.xsd</div><div class="tree-node tree-file" style="margin-left:9rem">📄 opc-relationships.xsd</div></div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 mce</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 mc.xsd</div></div>
+            <div class="tree-node" style="margin-left:6rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 microsoft</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2010.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2012.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cex-2018.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-cid-2016.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-sdtdatahash-2020.xsd</div><div class="tree-node tree-file" style="margin-left:8rem">📄 wml-symex-2015.xsd</div></div></div><div class="tree-node tree-file" style="margin-left:6rem">📄 soffice.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 unpack.py</div><div class="tree-node tree-file" style="margin-left:6rem">📄 validate.py</div>
+            <div class="tree-node" style="margin-left:5rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 validators</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:7rem">📄 __init__.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 base.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 docx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 pptx.py</div><div class="tree-node tree-file" style="margin-left:7rem">📄 redlining.py</div></div></div><div class="tree-node tree-file" style="margin-left:5rem">📄 recalc.py</div></div></div></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 replay</span>
+            </div>
+            <div class="tree-children"></div><div class="tree-node tree-file" style="margin-left:1rem">📄 requirements.txt</div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 scripts</span>
+            </div>
+            <div class="tree-children"><div class="tree-node tree-file" style="margin-left:2rem">📄 generate_dashboard.py</div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 shipments</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 compiler</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 replay</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 schemas</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 storage</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 validator</span>
+            </div>
+            <div class="tree-children"></div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 src</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 api</span>
+            </div>
+            <div class="tree-children"></div><div class="tree-node tree-file" style="margin-left:2rem">📄 main.py</div></div>
+            <div class="tree-node" style="margin-left:0rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 surfaces</span>
+            </div>
+            <div class="tree-children">
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 executive</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 ontology</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 replay</span>
+            </div>
+            <div class="tree-children"></div>
+            <div class="tree-node" style="margin-left:1rem">
+                <span class="tree-toggle">▶</span>
+                <span class="tree-folder">📁 shipments</span>
+            </div>
+            <div class="tree-children"></div></div>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Cognition Pipeline</h3>
+            <div style="font-size:0.8125rem;line-height:2;">
+                <div>📥 Signal →</div>
+                <div style="margin-left:1rem;">📦 Shipment →</div>
+                <div style="margin-left:2rem;">🔍 Ontology Extraction →</div>
+                <div style="margin-left:3rem;">🧠 Memory Activation →</div>
+                <div style="margin-left:4rem;">⚖️ Council →</div>
+                <div style="margin-left:5rem;">✍️ Chairman Synthesis →</div>
+                <div style="margin-left:6rem;">💾 Postgres Ledger →</div>
+                <div style="margin-left:7rem;">📊 Executive Surface</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="section">
+            <h3>Shipment Lineage</h3>
+            <div id="shipments">
+                
+    <div class="shipment-item">
+        <div class="shipment-id">No active shipments</div>
+        <div class="shipment-status" style="color: #6b7280">awaiting first signal</div>
+    </div>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Ontology</h3>
+            <p style="font-size:0.8125rem;color:#64748b;">No ontology nodes yet. First shipment will seed the graph.</p>
+        </div>
+    </div>
+</div>
+
+<div class="right">
+    <h2>Active Questions</h2>
+    <div class="adr-item">Which ADR should be written next?</div>
+    <div class="adr-item">What is the first signal to process?</div>
+    <div class="adr-item">Which council composition for V1?</div>
+
+    <h2 style="margin-top:2rem;">Unresolved Contradictions</h2>
+    <p style="font-size:0.8125rem;color:#64748b;">None yet. Contradictions surface after deliberation.</p>
+
+    <h2 style="margin-top:2rem;">Recent Reasoning Sessions</h2>
+    <p style="font-size:0.8125rem;color:#64748b;">No sessions recorded. Shipments will populate this view.</p>
+</div>
+
+<script>
+document.querySelectorAll('.tree-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        const children = toggle.parentElement.nextElementSibling;
+        if (children) {
+            children.classList.toggle('open');
+            toggle.textContent = children.classList.contains('open') ? '▼' : '▶';
+        }
+    });
+});
+</script>
+</body>
+</html>

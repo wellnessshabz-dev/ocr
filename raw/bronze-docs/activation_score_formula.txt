@@ -1,0 +1,5 @@
+ActivationScore(skill, shipment) =
+    w1 * OntologyOverlap(skill.jurisdiction, shipment.entities) +
+    w2 * TrajectoryRelevance(skill.history, shipment.trajectory) +
+    w3 * CouncilBalance(current_council, skill.perspective) +
+    w4 * PriorContribution(skill.id, similar_shipments)

@@ -1,0 +1,20 @@
+{
+  "shipment_id": "SHP-2026-0847",
+  "synthesis": {
+    "consensus_positions": [...],
+    "minority_positions": [...],
+    "open_questions": [...],
+    "confidence": 0.82,
+    "evidence_references": ["ONT-042", "MEM-8821", "REPO-commit-a4f3"]
+  },
+  "trajectory_delta": {
+    "affected_concepts": [...],
+    "position_shift": "vector",
+    "decision_type": "strategic | tactical | architectural | operational"
+  },
+  "governance": {
+    "requires_human_review": false,
+    "risk_flags": [],
+    "audit_hash": "sha256:..."
+  }
+}
