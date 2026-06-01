@@ -217,6 +217,14 @@ ingestion/obsidian──► ontology/extraction──► cognition/chairman ─�
 | `unit/` | Module-level unit tests |
 | `integration/` | End-to-end integration tests |
 
+### `ocr/tracking/` — Session Log & Checkpoint System (1 neighborhood)
+
+| Neighborhood | Purpose |
+|-------------|---------|
+| `tracking/` | Session tracking, decision log, checkpoint registry. See `ocr/tracking/PROTOCOL.md` |
+
+**Traffic:** Agents read/write SESSION.md per session; LOG.md and DECISIONS.md are append-only; CHECKPOINTS.md maps ckpt steps to git hashes.
+
 ## Blast Radius Summary
 
 | Severity | Districts | What breaks |
@@ -224,6 +232,7 @@ ingestion/obsidian──► ontology/extraction──► cognition/chairman ─�
 | 🔴 **Critical** | `cognition/`, `gbrain/`, `ontology/`, `shipments/`, `ledger/`, `orchestration/`, `src/`, `infra/` | Data loss, service outage, wrong decisions |
 | 🟡 **High** | `agents/`, `ingestion/`, `tests/` | Agent misbehavior, missing signals, false CI |
 | 🟢 **Medium** | `observability/`, `replay/`, `surfaces/` | Blindness, can't debug, display bugs |
+| 🟡 **Medium** | `ocr/tracking/` | Lost session context, confused agents on resume |
 | ⚪ **Low** | `docs/`, `raw/`, `scripts/` | Confusion, wasted dev time |
 
 ## Naming Conventions

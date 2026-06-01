@@ -31,7 +31,6 @@ Thumbs.db
 
 # OCR specific
 ocr/tracking/STATE.json
-ocr/tracking/CHECKPOINTS.md
 
 # ckpt
 .ckpt/

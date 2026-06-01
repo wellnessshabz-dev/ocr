@@ -194,7 +194,7 @@ end_session() {
 
     if [ -f "$SESSION_FILE" ]; then
         local goal
-        goal=$(head -5 "$SESSION_FILE" | grep "Goal" | sed 's/.*Goal$//' | sed 's/^[# ]*//' || echo "Unknown goal")
+        goal=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('session_goal', 'Unknown goal'))" 2>/dev/null || echo "Unknown goal")
         local session_date
         session_date="$(date -u +%Y-%m-%d)"
 

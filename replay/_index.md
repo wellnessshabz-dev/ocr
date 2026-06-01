@@ -15,6 +15,10 @@ blast_radius:
   depends_on_accuracy: "high (wrong replay = wrong audit conclusions)"
 connections:
   - direction: "upstream"
+    to: "ocr/tracking"
+    via: "CHECKPOINTS.md"
+    purpose: "Checkpoint registry provides checkpoint hashes + session context"
+  - direction: "upstream"
     to: "gbrain/replay"
     via: "Memory snapshot API"
     purpose: "Loads saved memory states for replay"
@@ -49,11 +53,22 @@ The replay system. Handles replaying past shipments, memory states, and decision
 **Data at risk:** Replay state, checkpoint data.
 **Accuracy:** Important — mistakes here cause downstream issues.
 
+## Data Sources
+
+| Source | What it provides | Status |
+|--------|-----------------|--------|
+| `ocr/tracking/CHECKPOINTS.md` | Checkpoint registry (step → git hash → context) | Active |
+| `ocr/tracking/LOG.md` | Session history for timeline browsing | Active |
+| `ocr/tracking/DECISIONS.md` | Decision log for audit | Active |
+| `ledger/schemas/001_init.sql` | `replay_sessions` table (schema only) | Schema exists, no code |
+| `gbrain/replay/` | Memory snapshots (planned) | Not built |
+
 ## Related Directories
 
 - `gbrain/replay/`
 - `surfaces/replay/`
 - `cognition/`
+- `ocr/tracking/` — session state and checkpoint registry
 
 ---
 *Timekeeper — Replay Manager — part of the OCR system. See `_index.md` in this directory for orientation.*
